@@ -1518,8 +1518,9 @@ let currentIdx = 0;
 let userAnswers = {};
 let reviewedQuestions = {};
 let timerInterval = null;
+let isExamStarted = false; // परीक्षा शुरू होने का ट्रैक रखने के लिए
 
-// ड्रॉपडाउन में 15 टेस्ट सेट जनरेट करने का फंक्शन
+// पेज लोड होते ही ड्रॉपडाउन में 15 टेस्ट सेट जनरेट करने का फंक्शन
 function setupTestDropdown() {
     const select = document.getElementById('test-set-select');
     if (select) {
@@ -1531,22 +1532,31 @@ function setupTestDropdown() {
             select.appendChild(opt);
         }
     }
-    loadSelectedTest();
+    // पहली बार में केवल वेलकम स्क्रीन लोड होगी, टेस्ट चालू नहीं होगा
+    prepareSelectedTest();
 }
 
-// नया टेस्ट सेट लोड करने का फंक्शन
-function loadSelectedTest() {
+// परीक्षा के प्रश्नों को बैकएंड में तैयार रखना लेकिन स्क्रीन पर न दिखाना
+function prepareSelectedTest() {
     currentTestSet = parseInt(document.getElementById('test-set-select').value) || 1;
     
+    // पुराने टाइमर और स्क्रीन को रीसेट करना
     if (timerInterval) clearInterval(timerInterval);
     currentIdx = 0;
     userAnswers = {};
     reviewedQuestions = {};
+    isExamStarted = false;
     
+    // स्क्रीन एलिमेंट्स को शुरुआती स्थिति में लाना
+    if (document.getElementById('start-screen')) document.getElementById('start-screen').style.display = 'block';
+    if (document.getElementById('questions-container')) document.getElementById('questions-container').style.display = 'none';
+    if (document.getElementById('exam-nav-buttons')) document.getElementById('exam-nav-buttons').style.display = 'none';
     if (document.getElementById('final-result-box')) document.getElementById('final-result-box').style.display = 'none';
+    if (document.getElementById('time-display')) document.getElementById('time-display').innerText = "100:00";
     if (document.getElementById('total-answered')) document.getElementById('total-answered').innerText = "0";
     if (document.getElementById('total-reviewed')) document.getElementById('total-reviewed').innerText = "0";
 
+    // डेटाबेस से 100 प्रश्न काटना
     let startIndex = (currentTestSet - 1) * 100;
     let endIndex = startIndex + 100;
     selectedQuestions = database1000.slice(startIndex, endIndex);
@@ -1570,7 +1580,6 @@ function loadSelectedTest() {
         
         q.o.forEach(function(opt, oIdx) {
             htmlContent += '<label class="option-label">';
-            // onchange इवेंट को बिल्कुल सटीक फिक्स किया गया है
             htmlContent += '<input type="radio" name="q-' + idx + '" value="' + oIdx + '" onchange="selectOption(' + idx + ', ' + oIdx + ')"> ';
             htmlContent += opt;
             htmlContent += '</label>';
@@ -1580,18 +1589,36 @@ function loadSelectedTest() {
         card.innerHTML = htmlContent;
         if (container) container.appendChild(card);
 
+        // साइडबार पैलेट बटन बनाना (शुरुआत में ये क्लिक नहीं होंगे जब तक परीक्षा स्टार्ट न हो)
         const btn = document.createElement('div');
         btn.className = "palette-btn " + (idx === 0 ? "active" : "");
         btn.id = "palette-btn-" + idx;
         btn.innerText = idx + 1;
-        btn.onclick = function() { jumpToQuestion(idx); };
+        btn.onclick = function() { if(isExamStarted) jumpToQuestion(idx); };
         if (palette) palette.appendChild(btn);
     });
+}
 
-    startTimer(100 * 60); // पूरे 100 मिनट का टाइमर
+// ⚡ नया फंक्शन: जब यूजर 'स्टार्ट परीक्षा' बटन दबाएगा
+function startExamNow() {
+    isExamStarted = true;
+    
+    // वेलकम स्क्रीन छुपाना और टेस्ट चालू करना
+    document.getElementById('start-screen').style.display = 'none';
+    document.getElementById('questions-container').style.display = 'block';
+    document.getElementById('exam-nav-buttons').style.display = 'flex';
+    
+    // टाइमर को लाइव टिक-टिक पर लगाना (100 मिनट)
+    startTimer(100 * 60); 
+}
+
+// छात्र द्वारा ड्रॉपडाउन बदलने पर नया सेट री-प्रिपेयर करना
+function loadSelectedTest() {
+    prepareSelectedTest();
 }
 
 function changeQuestion(dir) {
+    if(!isExamStarted) return;
     let newIdx = currentIdx + dir;
     if (newIdx >= 0 && newIdx < selectedQuestions.length) {
         jumpToQuestion(newIdx);
@@ -1599,6 +1626,7 @@ function changeQuestion(dir) {
 }
 
 function jumpToQuestion(idx) {
+    if(!isExamStarted) return;
     if (document.getElementById("q-card-" + currentIdx)) {
         document.getElementById("q-card-" + currentIdx).classList.remove('active');
     }
@@ -1622,12 +1650,10 @@ function jumpToQuestion(idx) {
     }
 }
 
-// जब छात्र उत्तर चुनता है (पीला रंग और काउंटिंग फिक्स)
 function selectOption(questionIdx, selectedValue) {
-    // बैकएंड में उत्तर सेव करना
+    if(!isExamStarted) return;
     userAnswers[questionIdx] = selectedValue;
     
-    // अगर पहले रिव्यू में था, तो रिव्यू से हटाएं
     if (reviewedQuestions[questionIdx]) {
         delete reviewedQuestions[questionIdx];
         if (document.getElementById("palette-btn-" + questionIdx)) {
@@ -1635,13 +1661,11 @@ function selectOption(questionIdx, selectedValue) {
         }
     }
     
-    // पैलेट बटन को पीला (Yellow) करना
     const btn = document.getElementById("palette-btn-" + questionIdx);
     if (btn) {
         btn.classList.add('answered');
     }
     
-    // लाइव काउंट अपडेट करना (केवल कितने हल किए)
     if (document.getElementById('total-answered')) {
         document.getElementById('total-answered').innerText = Object.keys(userAnswers).length;
     }
@@ -1650,27 +1674,25 @@ function selectOption(questionIdx, selectedValue) {
     }
 }
 
-// मार्क फॉर रिव्यू (बैंगनी रंग)
 function markForReview() {
+    if(!isExamStarted) return;
     reviewedQuestions[currentIdx] = true;
     
     const btn = document.getElementById("palette-btn-" + currentIdx);
     if (btn) {
-        btn.classList.remove('answered'); // यदि पहले आंसर दिया था तो पीला हटाए
+        btn.classList.remove('answered');
         btn.classList.add('reviewed');
     }
     
     if (document.getElementById('total-reviewed')) {
         document.getElementById('total-reviewed').innerText = Object.keys(reviewedQuestions).length;
     }
-    changeQuestion(1); // अगले प्रश्न पर जाएँ
+    changeQuestion(1);
 }
 
 function startTimer(duration) {
     let timer = duration, minutes, seconds;
     const display = document.getElementById('time-display');
-    
-    if (timerInterval) clearInterval(timerInterval);
     
     timerInterval = setInterval(function () {
         minutes = parseInt(timer / 60, 10);
@@ -1688,8 +1710,8 @@ function startTimer(duration) {
     }, 1000);
 }
 
-// परीक्षा सबमिट होने के बाद फाइनल स्कोर कार्ड दिखाने का फंक्शन
 function submitExam() {
+    if(!isExamStarted) return;
     clearInterval(timerInterval);
     let correct = 0;
     let wrong = 0;
@@ -1698,29 +1720,62 @@ function submitExam() {
     selectedQuestions.forEach(function(q, idx) {
         if (userAnswers[idx] !== undefined) {
             if (userAnswers[idx] == q.a) {
-                correct++; // सही उत्तर काउंट
+                correct++;
             } else {
-                wrong++; // गलत उत्तर काउंट
+                wrong++;
             }
         } else {
-            wrong++; // जो प्रश्न हल नहीं किए, वे भी स्कोर कार्ड में गलत/अटेम्प्टेड श्रेणी में जाएंगे
+            wrong++;
         }
     });
 
     let scorePercent = ((correct / totalQuestionsCount) * 100).toFixed(1);
 
-    // फाइनल परिणाम को स्क्रीन पर प्रिंट करना
     if (document.getElementById('correct-count')) document.getElementById('correct-count').innerText = correct;
     if (document.getElementById('wrong-count')) document.getElementById('wrong-count').innerText = wrong;
     if (document.getElementById('percentage-score')) document.getElementById('percentage-score').innerText = scorePercent + "%";
     
-    // रिजल्ट बॉक्स को विज़िबल करना
     if (document.getElementById('final-result-box')) {
         document.getElementById('final-result-box').style.display = 'block';
     }
 
-    alert("परीक्षा सफलतापूर्वक सबमिट हो गई है!\nआपका रिजल्ट साइड पैनल के 'फाइनल स्कोर कार्ड' में जारी कर दिया गया है।");
+    isExamStarted = false; // परीक्षा लॉक करना
+    alert("परीक्षा सफलतापूर्वक सबमिट हो गई है!\nआपका रिजल्ट साइड पैनल के 'फाइनल स्कोर कार्ड' में अपडेट कर दिया गया है।");
 }
 
 window.onload = setupTestDropdown;
+// ⚡ नया फंक्शन: लॉगआउट करके वेलकम स्क्रीन पर वापस जाने के लिए
+function logoutToWelcome() {
+    // यदि परीक्षा चल रही है, तो छात्र से पुष्टि (Confirmation) मांगना
+    if (isExamStarted) {
+        let confirmExit = confirm("क्या आप सचमुच परीक्षा से बाहर जाना चाहते हैं? बाहर जाने पर आपका वर्तमान प्रोग्रेस डेटा सेव नहीं होगा।");
+        if (!confirmExit) {
+            return; // यदि छात्र Cancel दबाता है, तो परीक्षा चलती रहेगी
+        }
+    }
 
+    // टाइमर को रोकना
+    if (timerInterval) clearInterval(timerInterval);
+    
+    // परीक्षा स्टेट को बंद करना
+    isExamStarted = false;
+    currentIdx = 0;
+    userAnswers = {};
+    reviewedQuestions = {};
+
+    // इंटरफ़ेस को रीसेट करके वापस वेलकम स्क्रीन पर ले जाना
+    if (document.getElementById('start-screen')) document.getElementById('start-screen').style.display = 'block';
+    if (document.getElementById('questions-container')) document.getElementById('questions-container').style.display = 'none';
+    if (document.getElementById('exam-nav-buttons')) document.getElementById('exam-nav-buttons').style.display = 'none';
+    if (document.getElementById('final-result-box')) document.getElementById('final-result-box').style.display = 'none';
+    
+    // प्रोग्रेस काउंटर्स और टाइमर टेक्स्ट को वापस शुरुआती स्थिति में लाना
+    if (document.getElementById('time-display')) document.getElementById('time-display').innerText = "100:00";
+    if (document.getElementById('total-answered')) document.getElementById('total-answered').innerText = "0";
+    if (document.getElementById('total-reviewed')) document.getElementById('total-reviewed').innerText = "0";
+
+    // रेडियो बटनों को अनचेक (Uncheck) करने और पैलेट कलर्स को साफ़ करने के लिए टेस्ट दोबारा बैकएंड में लोड करना
+    prepareSelectedTest();
+    
+    alert("आप सफलतापूर्वक लॉगआउट हो चुके हैं। आप नया सेट चुनकर दोबारा परीक्षा शुरू कर सकते हैं।");
+}
