@@ -3,152 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>आंगनवाड़ी केंद्र मार्गदर्शिका</title>
-    <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f0f2f5; padding: 15px; margin: 0; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #075e54; margin-bottom: 20px; }
-        .search-box { width: 100%; padding: 12px; margin-bottom: 20px; border: 1px solid #ddd; border-radius: 8px; font-size: 16px; box-sizing: border-box; outline: none; }
-        .table-wrapper { overflow-x: auto; }
-        table { width: 100%; border-collapse: collapse; min-width: 1000px; }
-        th { background-color: #075e54; color: white; padding: 12px; text-align: left; font-size: 14px; }
-        td { padding: 12px; border-bottom: 1px solid #eee; font-size: 14px; vertical-align: top; }
-        .btn { border: none; padding: 8px 12px; cursor: pointer; border-radius: 6px; font-size: 13px; color: white; font-weight: bold; text-decoration: none; display: inline-block; margin: 2px; }
-        .btn-nav { background: #34b7f1; } 
-        .btn-map { background: #128c7e; } 
-        #mapSection { display: none; margin-top: 20px; border: 2px solid #075e54; border-radius: 10px; overflow: hidden; }
-        iframe { width: 100%; height: 450px; border: none; }
-        .coords { font-size: 11px; color: #666; display: block; margin-top: 4px; }
-    </style>
+    <title>BLIS/MLIS राष्ट्रीय पात्रता परीक्षा पोर्टल (NTA Look)</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="container">
-    <h2>📍 आंगनवाड़ी केंद्र मार्गदर्शिका</h2>
-    
-    <input type="text" id="searchInput" class="search-box" placeholder="पंचायत, केंद्र या सेविका का नाम खोजें..." onkeyup="filterTable()">
+<header>
+    <div class="logo-title">💻 BLIS & MLIS कंप्यूटर आधारित परीक्षा (CBT)</div>
+    <div class="header-right">
+        <!-- टेस्ट सेट चुनने का विकल्प -->
+        <label for="test-set-select" style="color: white; margin-right: 10px;">टेस्ट सेट चुनें:</label>
+        <select id="test-set-select" onchange="loadSelectedTest()">
+            <!-- JS द्वारा यहाँ 15 टेस्ट लोड होंगे -->
+        </select>
+        <div id="user-info" style="margin-left: 20px;">परीक्षार्थी: BLIS Candidate</div>
+    </div>
+</header>
 
-    <div class="table-wrapper">
-        <table>
-            <thead>
-                <tr>
-                    <th>पंचायत</th>
-                    <th>केंद्र विवरण (नाम/कोड)</th>
-                    <th>सेविका का नाम</th>
-                    <th>सहायिका का नाम</th>
-                    <th>मोबाइल नंबर</th>
-                    <th>लोकेशन (Lat, Lng)</th>
-                    <th>कार्रवाई</th>
-                </tr>
-            </thead>
-            <tbody id="centerData"></tbody>
-        </table>
+<div class="main-container">
+    <!-- प्रश्न और विकल्प क्षेत्र -->
+    <div class="quiz-area">
+        <div class="test-header-bar">
+            <span id="current-topic-display">विषय: पुस्तकालय विज्ञान</span>
+        </div>
+        <div id="questions-container">
+            <!-- JavaScript द्वारा यहाँ चुनी गई टेस्ट सीरीज़ लोड होगी -->
+        </div>
+        
+        <div class="nav-buttons">
+            <button class="nav-btn prev-btn" onclick="changeQuestion(-1)">← Previous</button>
+            <button class="nav-btn review-btn" onclick="markForReview()">⭐ Mark for Review</button>
+            <button class="nav-btn next-btn" onclick="changeQuestion(1)">Save & Next →</button>
+        </div>
     </div>
 
-    <!-- पेज में मैप देखने के लिए -->
-    <div id="mapSection">
-        <div style="background:#075e54; color:white; padding:10px; display:flex; justify-content:space-between; align-items:center;">
-            <span id="mapTitle">केंद्र की स्थिति</span>
-            <button onclick="document.getElementById('mapSection').style.display='none'" style="background:red; color:white; border:none; cursor:pointer; padding: 5px 10px; border-radius: 4px;">बंद करें ×</button>
+    <!-- राइट साइडबार -->
+    <div class="sidebar">
+        <div class="timer">समय शेष: <span id="time-display">90:00</span></div>
+        
+        <div class="score-board">
+            <h4>📊 परीक्षा प्रोग्रेस रिपोर्ट</h4>
+            <div class="stats-grid">
+                <div>कुल प्रश्न: <span id="total-questions">100</span></div>
+                <div>उत्तर दिए: <span id="total-answered">0</span></div>
+                <div>रिव्यू मार्क: <span id="total-reviewed">0</span></div>
+            </div>
+            
+            <!-- फाइनल रिजल्ट बॉक्स (सबमिट के बाद दिखेगा) -->
+            <div id="final-result-box">
+                <h4>🎯 फाइनल स्कोर कार्ड</h4>
+                <p class="res-correct">सही उत्तर: <span id="correct-count">0</span></p>
+                <p class="res-wrong">गलत उत्तर: <span id="wrong-count">0</span></p>
+                <p class="res-percent">कुल प्रतिशत: <span id="percentage-score">0%</span></p>
+            </div>
         </div>
-        <iframe id="mapFrame" src=""></iframe>
+
+        <div class="palette-container">
+            <h3>🧩 प्रश्न पैलेट (Question Palette)</h3>
+            <div class="palette" id="question-palette"></div>
+        </div>
+        <button class="submit-btn" onclick="submitExam()">🔒 परीक्षा सबमिट करें</button>
     </div>
 </div>
 
-<script>
-    // केंद्र का डेटा (आप यहाँ और केंद्र जोड़ सकते हैं)
-    const centers = [
-        { 
-            panchayat: "रामपुर", 
-            name: "AWC रामपुर 01", 
-            code: "101", 
-            sevika: "सुनीता देवी", 
-            sahayika: "रीता वर्मा", 
-            mobile: "9876543210", 
-            lat: 25.5941, 
-            lng: 85.1376 
-        },
-        { 
-            panchayat: "रामपुर", 
-            name: "AWC रामपुर 02", 
-            code: "102", 
-            sevika: "सुनीता देवी", 
-            sahayika: "रीता वर्मा", 
-            mobile: "9876543210", 
-            lat: 25.5941, 
-            lng: 85.1376 
-        },
-
-    ];
-
-    function render() {
-        const tbody = document.getElementById('centerData');
-        tbody.innerHTML = centers.map(c => {
-            // गूगल मैप्स 'Directions' लिंक: यह दूरी और संभावित रास्ते दिखाता है
-            const navUrl = "https://www.google.com/maps/dir/?api=1&destination=" + c.lat + "," + c.lng + "&travelmode=driving";
-            
-            return `
-                <tr>
-                    <td>${c.panchayat}</td>
-                    <td><b>${c.name}</b><br><small>कोड: ${c.code}</small></td>
-                    <td>${c.sevika}</td>
-                    <td>${c.sahayika}</td>
-                    <td><a href="tel:${c.mobile}" style="color:#075e54; font-weight:bold; text-decoration:none;">${c.mobile}</a></td>
-                    <td><span class="coords">${c.lat}, ${c.lng}</span></td>
-                    <td>
-                        <button class="btn btn-map" onclick="viewMap(${c.lat}, ${c.lng}, '${c.name}')">मैप देखें</button>
-                        <a href="${navUrl}" target="_blank" class="btn btn-nav">रास्ता देखें</a>
-                    </td>
-                </tr>
-            `;
-        }).join('');
-    }
-
-    // इसी पेज में मिनी मैप लोड करने के लिए
-    function viewMap(lat, lng, name) {
-        const frame = document.getElementById('mapFrame');
-        const section = document.getElementById('mapSection');
-        // 'q' पैरामीटर पिन (Marker) दिखाता है
-        const embedUrl = "https://google.com" + lat + "," + lng + "&hl=hi&z=15&output=embed";
-        
-        frame.src = embedUrl;
-        document.getElementById('mapTitle').innerText = "केंद्र: " + name;
-        section.style.display = 'block';
-        section.scrollIntoView({ behavior: 'smooth' });
-    }
-
-// १. फिक्स्ड मैप लोड (No IP error)
-    function viewMap(lat, lng, name) {
-        const frame = document.getElementById('mapFrame');
-        // Proper structure: ://google.com
-        const embedUrl = "https://www.google.com/maps?q=" + lat + "," + lng + "&hl=hi&z=15&output=embed";
-        frame.src = embedUrl;
-        document.getElementById('mapTitle').innerText = name;
-        document.getElementById('mapSection').style.display = 'block';
-    }
-// २. व्हाट्सएप शेयर फीचर
-    function shareWA(name, lat, lng) {
-        const mapUrl = "https://www.google.com/maps?q=" + lat + "," + lng;
-        const text = encodeURIComponent("केंद्र: " + name + "\nलोकेशन देखें: " + mapUrl);
-        window.open("https://whatsapp.com" + text, "_blank");
-    }
-
-
-    // सर्च फंक्शन
-    function filterTable() {
-        const val = document.getElementById("searchInput").value.toLowerCase();
-        const rows = document.querySelectorAll("#centerData tr");
-        rows.forEach(r => {
-            r.style.display = r.innerText.toLowerCase().includes(val) ? "" : "none";
-        });
-    }
-function filterTable() {
-        const val = document.getElementById("searchInput").value.toLowerCase();
-        const rows = document.querySelectorAll("#centerData tr");
-        rows.forEach(r => r.style.display = r.innerText.toLowerCase().includes(val) ? "" : "none");
-    }
-
-    window.onload = render;
-</script>
+<script src="script.js"></script>
 </body>
 </html>
