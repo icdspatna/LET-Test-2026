@@ -22,25 +22,46 @@
 
 <div class="main-container">
     <!-- प्रश्न और विकल्प क्षेत्र -->
-    <div class="quiz-area">
-        <div class="test-header-bar">
-            <span id="current-topic-display">विषय: पुस्तकालय विज्ञान</span>
-        </div>
-        <div id="questions-container">
-            <!-- JavaScript द्वारा यहाँ चुनी गई टेस्ट सीरीज़ लोड होगी -->
-        </div>
-        
-        <div class="nav-buttons">
-            <button class="nav-btn prev-btn" onclick="changeQuestion(-1)">← Previous</button>
-            <button class="nav-btn review-btn" onclick="markForReview()">⭐ Mark for Review</button>
-            <button class="nav-btn next-btn" onclick="changeQuestion(1)">Save & Next →</button>
-        </div>
+   <!-- प्रश्न और विकल्प क्षेत्र -->
+<div class="quiz-area">
+    <div class="test-header-bar">
+        <span id="current-topic-display">विषय: पुस्तकालय विज्ञान (CBT Mode)</span>
     </div>
+
+    <!-- ⚡ नई स्टार्ट स्क्रीन (जो पहले दिखाई देगी) -->
+    <div id="start-screen" style="text-align: center; padding: 40px 20px; background: #fff; border-radius: 8px; border: 1px solid #cbd5e1; margin-top: 20px;">
+        <h2 style="color: #1e3a8a; margin-bottom: 15px;">BLIS / MLIS ऑनलाइन परीक्षा पोर्टल में आपका स्वागत है</h2>
+        <div style="text-align: left; max-width: 500px; margin: 0 auto 30px auto; line-height: 1.8; color: #475569;">
+            <p style="font-weight: bold; font-size: 16px; color: #1e293b;">📌 महत्वपूर्ण निर्देश:</p>
+            <ul>
+                <li>इस सेट में कुल <b>100 बहुविकल्पीय प्रश्न</b> शामिल हैं।</li>
+                <li>परीक्षा की कुल अवधि <b>100 मिनट</b> (1 घंटा 40 मिनट) है।</li>
+                <li>उत्तर देने पर प्रश्न पैलेट का रंग <b>पीला (Yellow)</b> हो जाएगा।</li>
+                <li>समय समाप्त होने पर परीक्षा अपने आप लॉक और सबमिट हो जाएगी।</li>
+            </ul>
+        </div>
+        <button id="start-exam-btn" onclick="startExamNow()" style="background-color: #22c55e; color: white; border: none; padding: 15px 40px; font-size: 18px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); transition: background 0.2s;">🚀 स्टार्ट परीक्षा (Start Exam)</button>
+    </div>
+
+    <!-- प्रश्न कंटेनर (यह पहले से छुपा रहेगा और स्टार्ट क्लिक पर दिखेगा) -->
+    <div id="questions-container" style="display: none;">
+        <!-- JavaScript द्वारा यहाँ प्रश्न लोड होंगे -->
+    </div>
+    
+    <!-- नेविगेशन बटन्स (यह भी स्टार्ट क्लिक पर दिखेंगे) -->
+    <div class="nav-buttons" id="exam-nav-buttons" style="display: none;">
+        <button class="nav-btn prev-btn" onclick="changeQuestion(-1)">← Previous</button>
+        <button class="nav-btn review-btn" style="background-color: #8b5cf6;" onclick="markForReview()">⭐ Mark for Review</button>
+        <button class="nav-btn next-btn" onclick="changeQuestion(1)">Save & Next →</button>
+    </div>
+</div>
+
 
     <!-- राइट साइडबार -->
     <div class="sidebar">
-        <div class="timer">समय शेष: <span id="time-display">90:00</span></div>
-        
+        <div class="timer">समय शेष: <span id="time-display">100:00</span></div>
+        <button id="logout-btn" onclick="logoutToWelcome()" style="background-color: #ef4444; color: white; border: none; padding: 10px; font-weight: bold; border-radius: 6px; cursor: pointer; margin-bottom: 12px; font-size: 14px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); transition: background 0.2s;">🚪 लॉगआउट (Exit Test)</button>
+
         <div class="score-board">
             <h4>📊 परीक्षा प्रोग्रेस रिपोर्ट</h4>
             <div class="stats-grid">
