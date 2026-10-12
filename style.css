@@ -212,7 +212,7 @@ html, body {
     margin: 0;
     padding: 0;
     width: 100%;
-    height: 100vh; /* Takes 100% of the mobile viewport height dynamically */
+    height: 75vh; /* Takes 100% of the mobile viewport height dynamically */
     overflow-x: hidden; /* Prevents unwanted horizontal scrolling */
 }
 
