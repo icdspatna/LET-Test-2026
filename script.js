@@ -1,323 +1,190 @@
-// =========================================================================
-// BLIS ONLINE MOCK TEST DATABASE (500 QUESTIONS)
-// =========================================================================
-// This array contains all 500 questions parsed directly from your CSV.
-// Format compatible with your dynamic web interface layout.
+// 🔴 अपनी गूगल शीट की ID यहाँ डालें
+const SHEET_ID = 'https://docs.google.com/spreadsheets/d/1v06TReMUN_KHEbi9yaZnC1WE1Cks1-O6ORdRtLcfs68/edit?usp=sharing'; 
 
-const database1000 = [
-    
-    { q: "पुस्तकालय विज्ञान का पांचवा नियम क्या है?", o: ["पुस्तकें उपयोग के लिए हैं", "पाठक का समय बचाएं", "पुस्तकालय एक वर्धमान संस्था है", "प्रत्येक पुस्तक को उसका पाठक मिले"], a: 2 },
-    { q: "मद्रास सार्वजनिक पुस्तकालय अधिनियम किस वर्ष पारित हुआ?", o: ["1948", "1954", "1967", "1990"], a: 0 },
-    { q: "CC (कॉलन क्लासिफिकेशन) में 'खोज का उपकरण' किसे माना गया है?", o: ["अंकन", "अनुक्रमणिका", "मुख्य प्रविष्टि", "परिसंचरण"], a: 0 },
-    { q: "IFLA का मुख्यालय कहाँ स्थित है?", o: ["पेरिस", "लंदन", "द हेग", "न्यूयोर्क"], a: 2 },
-    { q: "पुस्तकालय विज्ञान के प्रथम नियम के अनुसार कौन सी व्यवस्था सबसे उत्तम है?", o: ["क्लोज्ड एक्सेस", "ओपन एक्सेस", "सीमित एक्सेस", "कोई नहीं"], a: 1 },
-    { q: "म्यूज़ियम (संग्रहालय) किस प्रकार का सूचना स्रोत माना जाता है?", o: ["प्राथमिक", "द्वितीयक", "तृतीयक", "गैर-वृत्तांतपरक / संस्थागत"], a: 3 },
-    { q: "डॉ. एस.आर. रंगनाथन को भारत सरकार द्वारा पद्मश्री की उपाधि कब दी गई?", o: ["1950", "1957", "1962", "1970"], a: 1 },
-    { q: "AACR-2 का प्रकाशन किस वर्ष में हुआ था?", o: ["1967", "1978", "1988", "2002"], a: 1 },
-    { q: "पुस्तकालय सूची का मुख्य उद्देश्य क्या होता है?", o: ["पुस्तकों को सुरक्षित रखना", "पाठकों को पुस्तकों को ढूंढने में मदद करना", "बजट बनाना", "स्टाफ की हाजिरी लगाना"], a: 1 },
-      { q: "पुस्तकालय वर्गीकरण के सिद्धांतों में 'गतिशील सिद्धांत' (Dynamic Theory) के प्रतिपादक कौन थे?", o: ["मेल्विन डेवी", "डॉ. एस.आर. रंगनाथन", "डब्ल्यू.सी.बी. सेयर्स", "एच.ई. ब्लिस"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डिवे दशमलव वर्गीकरण (DDC) का कौन सा संस्करण न्यूनतम पृष्ठों (केवल 44 पृष्ठ) का था?", o: ["प्रथम संस्करण", "द्वितीय संस्करण", "तीसरा संस्करण", "पाँचवाँ संस्करण"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) के छठे संस्करण में 'भौतिक विज्ञान' (Physics) को किस मुख्य वर्ग (Main Class) द्वारा दर्शाया गया है?", o: ["B", "C", "D", "E"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण की किस पद्धति में 'सापेक्षिक अनुक्रमणिका' (Relative Index) का उपयोग मुख्य विशेषता के रूप में किया गया है?", o: ["कॉलन क्लासिफिकेशन (CC)", "डिवे दशमलव वर्गीकरण (DDC)", "यूनिवर्सल डेसिमल क्लासिफिकेशन (UDC)", "लाइब्रेरी ऑफ कांग्रेस क्लासिफिकेशन (LCC)"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डॉ. रंगनाथन के अनुसार, वर्गीकरण के वैचारिक धरातल (Notational Plane) के लिए कुल कितने सिद्धांतों (Canons) का प्रतिपादन किया गया है?", o: ["15 सिद्धांत", "21 सिद्धांत", "28 सिद्धांत", "43 सिद्धांत"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "यूनिवर्सल डेसिमल क्लासिफिकेशन (UDC) का प्रथम संस्करण किस वर्ष प्रकाशित हुआ था?", o: ["1895", "1905", "1933", "1943"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) में दो मुख्य वर्गों के बीच 'अधीनस्थ संबंध' को दर्शाने के लिए किस योजक चिह्न (Connecting Symbol) का प्रयोग किया जाता है?", o: ["बिंदु (.)", "कोलन (:)", "अर्धविराम (;)", "हाइफन (-)"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में ज्ञान जगत को विभाजित करने के लिए किस अंकन (Notation) का मुख्य रूप से प्रयोग किया जाता है?", o: ["शुद्ध अरबी अंक (Pure Arabic Numerals)", "मिश्रित अंकन (Mixed Notation)", "रोमन वर्णमाला", "ग्रीक अक्षर"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के सिद्धांतों में 'साहित्यिक वारंट' (Literary Warrant) के सिद्धांत का प्रतिपादन किसने किया था?", o: ["ई.सी. रिचर्डसन", "ई.डब्ल्यू. हुल्म", "जे.डी. ब्राउन", "एच.ई. ब्लिस"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "सब्जेक्ट क्लासिफिकेशन (SC) पद्धति का विकास किस विद्वान द्वारा किया गया था?", o: ["जे.डी. ब्राउन", "सी.ए. कटर", "मेल्विन डेवी", "डॉ. रंगनाथन"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) के छठे संस्करण में 'पवित्र ग्रंथ' (Sacred Books) के वर्गीकरण के लिए किस प्रतीक का उपयोग किया जाता है?", o: ["ग्रीक अक्षर डेल्टा (Δ)", "रोमन लघु अक्षर", "तारांकन (*)", "कोष्ठक ()"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC (यूनिवर्सल डेसिमल क्लासिफिकेशन) पद्धति का प्रबंधन और विकास वर्तमान में कौन सी संस्था करती है?", o: ["IFLA", "FID", "UDC कंसोर्टियम", "UNESCO"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में प्रयुक्त 'सारणी 3' (Table 3) निम्नलिखित में से किससे संबंधित है?", o: ["व्यक्तिगत भाषाएँ (Individual Languages)", "व्यक्तिगत साहित्य (Individual Literatures)", "भौगोलिक क्षेत्र", "नृवंशविज्ञान समूह"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण प्रक्रिया में किसी पुस्तक के विशिष्ट विषय को कृत्रिम भाषा (Ordinal Numbers) में बदलना क्या कहलाता है?", o: ["वर्गांक (Class Number)", "पुस्तक संख्या (Book Number)", "संग्रह संख्या (Collection Number)", "कॉल नंबर"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) का प्रथम संस्करण किस संस्था द्वारा प्रकाशित किया गया था?", o: ["मद्रास पुस्तकालय संघ (MLA)", "भारतीय पुस्तकालय संघ (ILA)", "एशलिब (Aslib)", "ब्रिटिश काउंसिल"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "मेल्विन डेवी ने न्यूयॉर्क राज्य पुस्तकालय के निदेशक के रूप में किस वर्ष कार्यभार संभाला था?", o: ["1876", "1883", "1889", "1895"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण में 'लचीलापन' (Flexibility) का सिद्धांत मुख्य रूप से किस बात पर बल देता है?", o: ["नए विषयों को समाहित करने की क्षमता", "कठोर अंकन व्यवस्था", "सीमित मुख्य वर्ग", "अनुक्रमणिका का आकार"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "CC पद्धति के अनुसार, 'PMEST' फार्मूला में योजक चिह्न 'उद्धरण चिह्न' (Comma ',') का प्रयोग किस तत्व के लिए होता है?", o: ["Personality (व्यक्तित्व)", "Matter (पदार्थ)", "Energy (ऊर्जा)", "Space (स्थान)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "बिब्लियोग्राफिक क्लासिफिकेशन (BC) पद्धति के प्रणेता कौन थे?", o: ["एच.ई. ब्लिस", "जे.डी. ब्राउन", "सी.ए. कटर", "मेल्विन डेवी"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 20वें संस्करण के संपादन का कार्य मुख्य रूप से किसके द्वारा किया गया था?", o: ["बेंजामिन ए. कस्टर", "जॉन पी. कोमारोमी", "मेल्विन डेवी", "मिशेल फोकाल्ट"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'अन्वेषण' या 'अनुसंधान' (Research) को किस प्रकार के विषय के अंतर्गत रखा जाता है?", o: ["सरल विषय", "जटिल विषय", "संयुक्त विषय", "अधिविषय"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के सिद्धांतों में 'प्रतिगामी व्यवस्था' (Evolutionary Order) का अनुसरण करने वाली पद्धति कौन सी है?", o: ["एक्सपेंसिव क्लासिफिकेशन (EC)", "डिवे दशमलव वर्गीकरण (DDC)", "सब्जेक्ट क्लासिफिकेशन (SC)", "कॉलन क्लासिफिकेशन (CC)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में कुल कितनी सहायक सारणियाँ (Auxiliary Tables) उपलब्ध हैं?", o: ["4 सारणियाँ", "5 सारणियाँ", "7 सारणियाँ", "10 सारणियाँ"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के सातवें संस्करण (1987) का संपादन डॉ. रंगनाथन की मृत्यु के पश्चात किसने किया था?", o: ["एम.ए. गोपीनाथ", "पी.एन. कौला", "एस. बशीरउद्दीन", "बी.एस. केसवन"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC पद्धति में सामान्य उप-विभागों (Common Auxiliaries) के अंतर्गत 'समय' (Time) को दर्शाने के लिए किस चिह्न का उपयोग होता है?", o: ["उद्धरण चिह्न (\" \")", "समानता चिह्न (=)", "कोष्ठक ( )", "प्लस चिह्न (+)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण के इतिहास में 'फाइव लॉज ऑफ लाइब्रेरी साइंस' पुस्तक किस वर्ष प्रकाशित हुई थी?", o: ["1928", "1931", "1933", "1937"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति के प्रतिलिप्यधिकार (Copyright) का स्वामित्व वर्तमान में किस वैश्विक संस्था के पास है?", o: ["लाइब्रेरी ऑफ कांग्रेस", "ओसीएलसी (OCLC)", "एएलए (ALA)", "यूनेस्को"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में प्रयुक्त 'फेसेट एनालिसिस' (Facet Analysis) की प्रक्रिया का मुख्य उद्देश्य क्या है?", o: ["पुस्तकों की भौतिक सुरक्षा", "विषय के विभिन्न पक्षों को पहचानना और व्यवस्थित करना", "बजट का सही आवंटन", "सूची पत्रक का मुद्रण"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डॉ. रंगनाथन द्वारा प्रतिपादित 'वर्गीकरण के उपसूत्रों' (Canons) को कुल कितने स्तरों या धरातलों में विभाजित किया गया है?", o: ["2 स्तर", "3 स्तर", "4 स्तर", "5 स्तर"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC का 23वां संस्करण (नवीनतम मुद्रित रूप) किस वर्ष में प्रकाशित किया गया था?", o: ["2003", "2009", "2011", "2015"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "एक्सपेंसिव क्लासिफिकेशन (Expansive Classification) पद्धति के रचयिता सी.ए. कटर किस वर्ष इसे लेकर आए थे?", o: ["1876", "1891", "1901", "1905"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संस्करण में 'ऊर्जा' (Energy) पक्ष को जोड़ने के लिए किस योजक चिह्न का प्रयोग अनिवार्य है?", o: ["कोलन (:)", "अर्धविराम (;)", "बिंदु (.)", "उद्धरण चिह्न (,)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "लाइब्रेरी ऑफ कांग्रेस क्लासिफिकेशन (LCC) पद्धति का विकास मुख्य रूप से किस देश की राष्ट्रीय लाइब्रेरी के लिए हुआ था?", o: ["ब्रिटेन", "कनाडा", "अमेरिका", "ऑस्ट्रेलिया"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में प्रयुक्त 'फिनिक्स शेड्यूल्स' (Phoenix Schedules) का मुख्य तात्पर्य क्या होता है?", o: ["पूरी तरह से पुनर्गठित और संशोधित अनुसूचियाँ", "मृत विषयों की सूची", "अनुक्रमणिका का पूरक", "दुर्लभ पुस्तकों की व्यवस्था"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डॉ. रंगनाथन के अनुसार, 'पुस्तकालय वर्गीकरण' (Library Classification) किस प्रकार का विज्ञान या कला है?", o: ["केवल व्यावहारिक कला", "शुद्ध भौतिक विज्ञान", "ज्ञान जगत को कृत्रिम भाषा में मैप करने का व्यवस्थित विज्ञान", "केवल प्रशासनिक कार्य"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'स्थान एकल' (Space Isolate) के लिए प्रयुक्त योजक चिह्न छठे संशोधित संस्करण में क्या है?", o: ["बिंदु (.)", "एकल उद्धरण चिह्न (')", "अर्धविराम (;)", "कोलन (:)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के किस संस्करण से इलेक्ट्रॉनिक रूप 'इलेक्ट्रॉनिक डेवी' (Electronic Dewey) की शुरुआत की गई थी?", o: ["19वां संस्करण", "20वां संस्करण", "21वां संस्करण", "22वां संस्करण"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण प्रणालियों में 'इंटरनेशनल क्लासिफिकेशन' (International Classification) पद्धति के लेखक कौन थे?", o: ["एफ. राइडर", "एच.ई. ब्लिस", "जे.डी. ब्राउन", "डॉ. रंगनाथन"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'काल एकल' (Time Isolate) के लिए प्रयुक्त योजक चिह्न छठे संशोधित संस्करण (1963) में क्या निर्धारित किया गया था?", o: ["एकल उद्धरण चिह्न (')", "बिंदु (.)", "कोलन (:)", "अर्धविराम (;)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति का लघु संस्करण (Abridged Edition) मुख्य रूप से किन पुस्तकालयों के लिए डिज़ाइन किया गया है?", o: ["राष्ट्रीय पुस्तकालय", "शोध एवं विश्वविद्यालय पुस्तकालय", "छोटे और स्कूली पुस्तकालय", "डिजिटल पुस्तकालय"], a: 2, topic: "पुस्तकालय वर्गीकरण" }
+let selectedSubject = 'BLIS';
+let currentQuestionIndex = 0;
+let totalQuestionsCount = 0;
+let timerInterval;
+let timeLeft = 6000; // 100 मिनट
+let examStarted = false;
+let questions = [];
 
-        // =========================================================================
-    // 🗂️ SET 1: पुस्तकालय वर्गीकरण (Library Classification) - प्रश्न 41 से 80
-    // =========================================================================
-    { q: "डॉ. एस.आर. रंगनाथन द्वारा लिखित पुस्तक 'प्रोलेगोमेना टू लाइब्रेरी क्लासिफिकेशन' (Prolegomena to Library Classification) का प्रथम संस्करण किस वर्ष प्रकाशित हुआ था?", o: ["1933", "1937", "1957", "1967"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डिवे दशमलव वर्गीकरण (DDC) के 23वें संस्करण में कुल कितने खंड (Volumes) हैं?", o: ["2 खंड", "3 खंड", "4 खंड", "5 खंड"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) पद्धति में 'मिश्रित अंकन' (Mixed Notation) के अंतर्गत कुल कितने प्रकार के प्रतीकों के समूहों का उपयोग किया गया है?", o: ["3 समूह", "4 समूह", "6 समूह", "8 समूह"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के उपसूत्रों में 'अपवाद का उपसूत्र' (Canon of Ascertainability) मुख्य रूप से किससे संबंधित है?", o: ["वैचारिक धरातल", "शाब्दिक धरातल", "अंकन धरातल", "सूचीकरण धरातल"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'Table 1' निम्नलिखित में से किस विषय को दर्शाती है?", o: ["मानक उप-विभाजन (Standard Subdivisions)", "भौगोलिक क्षेत्र", "व्यक्तिगत साहित्य", "नृवंशविज्ञान समूह"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन (CC) में प्रयुक्त 'अन्तर-विषय दशा संबंध' (Inter-Subject Phase Relation) को दर्शाने के लिए किस संकेतक अक्षर का प्रयोग किया जाता है?", o: ["a", "b", "c", "d"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "यूनिवर्सल डेसिमल क्लासिफिकेशन (UDC) का 'अन्तर्राष्ट्रीय माध्यम संस्करण' (International Medium Edition) किस वर्ष प्रकाशित हुआ था?", o: ["1955", "1965", "1985", "1995"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण में 'वर्गीकरण की आशुलिपि' (Shorthand sign of classification) किसे कहा जाता है?", o: ["अनुक्रमणिका", "मुख्य वर्ग", "अंकन (Notation)", "कैटलॉग कार्ड"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में 'सारणी 2' (Table 2) का संबंध मुख्य रूप से किससे है?", o: ["भाषाएँ", "साहित्य", "भौगोलिक क्षेत्र और स्थान (Geographic Areas and Historical Periods)", "नस्लीय समूह"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "डॉ. रंगनाथन द्वारा प्रतिपादित 'अंकन की क्षमता' (Capacity of Notation) को बढ़ाने के लिए किस प्रविधि का उपयोग किया जाता है?", o: ["फेसेट एनालिसिस", "दशा संबंध", "सेक्टर डिवाइस (Sector Device)", "अनुक्रमणीकरण"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "सब्जेक्ट क्लासिफिकेशन (SC) पद्धति में विषयों की व्यवस्था के लिए किस मुख्य दृष्टिकोण का उपयोग किया गया था?", o: ["साहित्यिक वारंट", "ठोस पदार्थ और उसका गुण (Concrete before Abstract)", "कालानुक्रमिक", "भौगोलिक"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति के 21वें संस्करण में 'Table 7' को हटाकर उसका डेटा किस सारणी में समाहित किया गया था?", o: ["Table 1", "Table 2", "Table 5", "इसे पूरी तरह समाप्त कर दिया गया"], a: 3, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संस्करण में 'पदार्थ' (Matter) पक्ष को जोड़ने के लिए किस योजक चिह्न का प्रयोग किया जाता है?", o: ["अर्धविराम (;)", "कोलन (:)", "बिंदु (.)", "उद्धरण चिह्न (,)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के सिद्धांतों में 'परवर्ती काल का उपसूत्र' (Canon of Later-in-Time) ज्ञान जगत के किस पक्ष को व्यवस्थित करता है?", o: ["स्थान", "समय और कालानुक्रम", "भाषा", "साहित्यिक रूप"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के इतिहास में 'प्रथम ऑनलाइन संस्करण' (WebDewey) किस वर्ष लॉन्च किया गया था?", o: ["1993", "2000", "2003", "2011"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'रिक्त अंक' (Empty Digit) की अवधारणा का उपयोग मुख्य रूप से किस कार्य के लिए होता है?", o: ["अंकन को छोटा करने", "नए मुख्य वर्गों को बीच में स्थान देने (Interpolation)", "अनुक्रमणिका बनाने", "समय दर्शाने"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC (यूनिवर्सल डेसिमल क्लासिफिकेशन) के विकास में मेल्विन डेवी की अनुमति से किसने सुधार और विस्तार किया था?", o: ["हेनरी ला फोंटेन और पॉल ओटलेट", "एच.ई. ब्लिस", "जे.डी. ब्राउन", "सी.ए. कटर"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में 'राजनीति विज्ञान' (Political Science) को किस मुख्य संख्या द्वारा दर्शाया गया है?", o: ["310", "320", "330", "340"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में प्रयुक्त 'आंतरिक पहलू दशा संबंध' (Intra-Facet Phase Relation) के अंतर्गत 'झुकाव' (Bias) को किस अक्षर से दर्शाया गया है?", o: ["j", "k", "m", "n"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण प्रणालियों में 'राडार क्लासिफिकेशन' या 'राइडर्स इंटरनेशनल क्लासिफिकेशन' का प्रकाशन किस वर्ष हुआ था?", o: ["1951", "1961", "1971", "1981"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के किस मुख्य वर्ग के अंतर्गत 'पुस्तकालय एवं सूचना विज्ञान' (Library and Information Science) को रखा गया है?", o: ["000 (Generalities)", "100", "200", "300"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संशोधित संस्करण में 'चिकित्सा विज्ञान' (Medicine) के लिए कौन सा मुख्य वर्ग (Main Class) निर्धारित है?", o: ["G", "I", "L", "M"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण में ज्ञान जगत के अनवरत विकास को दर्शाने के लिए डॉ. रंगनाथन ने किस शब्द का प्रयोग किया था?", o: ["शाश्वत संस्था", "वर्धमान संस्था (Growing Organism)", "परिवर्तनशील निकाय", "लचीली संरचना"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'शुद्ध विज्ञान' (Pure Sciences) का मुख्य वर्ग कौन सा है?", o: ["400", "500", "600", "700"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में प्रयुक्त 'ज़ोन एनालिसिस' (Zone Analysis) की अवधारणा के अनुसार अंकन जगत को कितने क्षेत्रों में बांटा गया है?", o: ["2 क्षेत्र", "3 क्षेत्र", "4 क्षेत्र", "5 क्षेत्र"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC पद्धति में भाषाओं (Languages) को दर्शाने के लिए किस योजक चिह्न या प्रतीक का प्रयोग किया जाता है?", o: ["कोष्ठक ( )", "समानता चिह्न (=)", "प्लस चिह्न (+)", "कोलन (:)"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में 'अर्थशास्त्र' (Economics) विषय के लिए कौन सा मुख्य वर्ग कोड निश्चित है?", o: ["320", "330", "340", "350"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'ग्रंथपरक वर्गीकरण' को कुल कितने चरणों या चरणों की प्रक्रिया (Steps in Classification) के रूप में समझाया गया है?", o: ["5 चरण", "7 चरण", "9 चरण", "12 चरण"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के शाब्दिक धरातल (Verbal Plane) के लिए प्रतिपादित 'समानार्थी शब्दों का वर्जन' किस उपसूत्र के अंतर्गत आता है?", o: ["Canon of Reticence", "Canon of Context", "Canon of Currency", "कोई नहीं"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 20वें संस्करण के कुल कितने खंड (Volumes) प्रकाशित किए गए थे?", o: ["2 खंड", "3 खंड", "4 खंड", "5 खंड"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संस्करण में 'भूगोल' (Geography) विषय को किस मुख्य वर्ग अक्षर द्वारा दर्शाया गया है?", o: ["T", "U", "V", "W"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण के इतिहास में 'पुस्तकों की व्यवस्था अलमारियों पर करने का वैज्ञानिक तरीका' सबसे पहले किस पद्धति ने दिया?", o: ["DDC", "CC", "UDC", "SC"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में 'इतिहास' (History) विषय के लिए मुख्य वर्ग श्रृंखला कौन सी है?", o: ["800", "900", "910", "990"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'Common Isolates' (सामान्य एकल) को मुख्य रूप से कितने प्रकारों में विभाजित किया गया है?", o: ["2 प्रकार (ACI और PCI)", "3 प्रकार", "4 प्रकार", "5 प्रकार"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC पद्धति का पूर्ण रूप से इलेक्ट्रॉनिक संस्करण वर्तमान में किस नाम से जाना जाता है?", o: ["WebUDC", "UDC Summary", "UDC MRF (Master Reference File)", "Electronic UDC"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में प्रयुक्त 'शेड्यूल्स' (Schedules) का मुख्य कार्य क्या होता है?", o: ["पुस्तकों के मूल्य की सूची", "मुख्य वर्गों और उनके उप-विभागों की क्रमिक सूची", "पुस्तकालय के कर्मचारियों की सूची", "दुर्लभ ग्रंथों का विवरण"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संस्करण में 'विधि/कानून' (Law) विषय के लिए कौन सा मुख्य वर्ग अक्षर प्रयुक्त होता है?", o: ["W", "X", "Y", "Z"], a: 3, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण प्रणालियों में 'अंकन' (Notation) को डॉ. रंगनाथन ने किस प्रकार का मूल्यवान साधन माना है?", o: ["भौतिक सुरक्षा का साधन", "वैचारिक धरातल को सुगम बनाने वाली कृत्रिम भाषा", "बजट नियंत्रण की विधि", "कोई नहीं"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण में 'धर्म' (Religion) विषय के लिए कौन सा मुख्य वर्ग निर्धारित किया गया है?", o: ["100", "200", "300", "400"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन पद्धति में ज्ञान जगत के विभिन्न विषयों के बीच 'तुलना या प्रभाव' को दर्शाने वाली प्रविधि को क्या कहा जाता है?", o: ["फेसेट एनालिसिस", "दशा संबंध (Phase Relation)", "ज़ोन एनालिसिस", "रिक्त अंक विधि"], a: 1, topic: "पुस्तकालय वर्गीकरण" }
-
-    // =========================================================================
-    // 🗂️ SET 1: पुस्तकालय वर्गीकरण (Library Classification) - प्रश्न 81 से 100
-    // =========================================================================
-    { q: "डॉ. रंगनाथन द्वारा प्रतिपादित वर्गीकरण के तीन धरातलों (Three Planes of Work) का सही क्रम क्या है?", o: ["शाब्दिक, वैचारिक, अंकन", "वैचारिक, शाब्दिक, अंकन", "अंकन, शाब्दिक, वैचारिक", "वैचारिक, अंकन, शाब्दिक"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'दर्शनशास्त्र एवं मनोविज्ञान' (Philosophy & Psychology) का मुख्य वर्ग कौन सा है?", o: ["100", "150", "200", "300"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संशोधित संस्करण में 'कृषि विज्ञान' (Agriculture) को किस मुख्य वर्ग अक्षर द्वारा दर्शाया गया है?", o: ["J", "K", "L", "M"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण के उपसूत्रों में 'अपरिवर्तनीयता का उपसूत्र' (Canon of Permanence) मुख्य रूप से अंकन जगत के किस पक्ष पर बल देता है?", o: ["बार-बार प्रतीकों को बदलना", "एक बार प्रयुक्त प्रतीक का अर्थ स्थिर रखना", "लगातार नए वर्गों को जोड़ना", "कोई नहीं"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में प्रयुक्त 'ऐड टू' (Add to...) निर्देश का मुख्य कार्य क्या होता है?", o: ["नया संस्करण खरीदना", "अनुसूची के एक भाग से दूसरे भाग में संख्या जोड़ना", "पुस्तकों का मूल्य बढ़ाना", "सूची पत्रक का आकार बदलना"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'ग्रंथ संख्या' (Book Number) के फार्मूले में कुल कितने तत्व (Facets) शामिल होते हैं?", o: ["3 तत्व", "5 तत्व", "8 तत्व", "12 तत्व"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "UDC (यूनिवर्सल डेसिमल क्लासिफिकेशन) पद्धति में 'स्थान' (Space) को दर्शाने के लिए किस योजक चिह्न का प्रयोग किया जाता है?", o: ["कोष्ठक ( )", "समानता चिह्न (=)", "उद्धरण चिह्न (\" \")", "कोलन (:)"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण में 'ज्ञान जगत' (Universe of Knowledge) की संरचना को डॉ. रंगनाथन ने किस प्रकार का माना है?", o: ["कठोर और सीमित", "निरंतर परिवर्तनशील और बहुआयामी (Multidimensional)", "केवल द्विविभाजित", "स्थिर निकाय"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'समाजशास्त्र' (Sociology) विषय का मुख्य वर्ग कोड क्या है?", o: ["301", "310", "320", "330"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संशोधित संस्करण में 'शिक्षा विज्ञान' (Education) को किस मुख्य वर्ग अक्षर द्वारा दर्शाया गया है?", o: ["S", "T", "U", "V"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "वर्गीकरण प्रणालियों में 'ग्रैजुएशन' (Graduation) या क्रमिक विकास का सिद्धांत सबसे पहले किस विद्वान ने प्रतिपादित किया था?", o: ["एच.ई. ब्लिस", "ई.सी. रिचर्डसन", "मेल्विन डेवी", "डब्ल्यू.सी.बी. सेयर्स"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति में 'सापेक्षिक अनुक्रमणिका' (Relative Index) की व्यवस्था किस क्रम में होती है?", o: ["कालानुक्रमिक", "भौगोलिक", "वर्णानुक्रमिक (Alphabetical)", "वर्गांक के अनुसार"], a: 2, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में प्रयुक्त 'डिवाइस' (Devices) जैसे भौगोलिक विधि (GD) या कालानुक्रमिक विधि (CD) का मुख्य उद्देश्य क्या है?", o: ["बजट बचाना", "वर्गांक को नए और विशिष्ट पक्षों के साथ विस्तारित करना", "स्टाफ की संख्या कम करना", "कोई नहीं"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'भाषा विज्ञान' (Language / Linguistics) का मुख्य वर्ग कौन सा है?", o: ["400", "500", "600", "800"], a: 0, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन के छठे संस्करण में 'ऊर्जा' (Energy) तत्व का मुख्य स्वभाव क्या होता है?", o: ["किसी विषय की भौतिक सामग्री", "विषय में होने वाली क्रिया, प्रक्रिया या समस्या (Problem/Action)", "भौगोलिक स्थान", "समय सीमा"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "पुस्तकालय वर्गीकरण में 'एलोकेशन' (Allocation) या स्थान आबंटन का सिद्धांत मुख्य रूप से किससे संबंधित है?", o: ["पुस्तकालय भवन का नक्शा", "अंकन श्रृंखला में मुख्य वर्गों को पर्याप्त जगह देना", "कंप्यूटर नेटवर्क की गति", "कोई नहीं"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC पद्धति के इतिहास में 'दशमलव' (.) चिह्न का प्रयोग अनिवार्य रूप से कितनी संख्याओं के बाद किया जाता है?", o: ["प्रत्येक दो संख्या के बाद", "प्रथम तीन संख्याओं के बाद (After first three digits)", "पाँच संख्याओं के बाद", "अंत में"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन में 'अग्रगामी एकल' (Anteriorising Common Isolates - ACI) का उपयोग करने पर वर्गांक की स्थिति पर क्या प्रभाव पड़ता है?", o: ["वर्गांक बड़ा हो जाता है", "वह पुस्तक शेल्फ पर अपने मुख्य वर्ग से पहले (Anterior) स्थान पाती है", "वह पुस्तक शेल्फ के अंत में जाती है", "कोई प्रभाव नहीं पड़ता"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "DDC के 19वें संस्करण के अनुसार, 'प्रौद्योगिकी / व्यावहारिक विज्ञान' (Technology / Applied Sciences) का मुख्य वर्ग क्या है?", o: ["500", "600", "700", "800"], a: 1, topic: "पुस्तकालय वर्गीकरण" },
-    { q: "कॉलन क्लासिफिकेशन पद्धति में पाँच मूलभूत तत्वों (PMEST) को पहचानने के लिए डॉ. रंगनाथन ने किस तकनीक की वकालत की थी?", o: ["ज़ोन एनालिसिस", "अवशेष विधि (Method of Residue)", "दशा संबंध", "रिक्त अंक तकनीक"], a: 1, topic: "पुस्तकालय वर्गीकरण" }
-];
-
-// नोट: आपकी 1500 प्रश्नों की विशाल 'database1000' सूची इस एरे के ऊपर हमेशा की तरह मौजूद रहेगी।
-let currentTestSet = 1;
-let selectedQuestions = [];
-let currentIdx = 0;
-let userAnswers = {};
-let reviewedQuestions = {};
-let timerInterval = null;
-let isExamStarted = false; // परीक्षा शुरू होने का ट्रैक रखने के लिए
-
-// पेज लोड होते ही ड्रॉपडाउन में 15 टेस्ट सेट जनरेट करने का फंक्शन
-function setupTestDropdown() {
-    const select = document.getElementById('test-set-select');
-    if (select) {
-        select.innerHTML = "";
-        for (let i = 1; i <= 15; i++) {
-            const opt = document.createElement('option');
-            opt.value = i;
-            opt.innerText = "Test Set " + i + " (प्रश्न " + (((i - 1) * 100) + 1) + " से " + (i * 100) + ")";
-            select.appendChild(opt);
-        }
-    }
-    // पहली बार में केवल वेलकम स्क्रीन लोड होगी, टेस्ट चालू नहीं होगा
-    prepareSelectedTest();
+function updateSelectedSubject() {
+    selectedSubject = document.getElementById('subject-select').value;
+    document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
 }
 
-// परीक्षा के प्रश्नों को बैकएंड में तैयार रखना लेकिन स्क्रीन पर न दिखाना
-function prepareSelectedTest() {
-    currentTestSet = parseInt(document.getElementById('test-set-select').value) || 1;
+async function startExamWithSubject() {
+    selectedSubject = document.getElementById('subject-select').value;
+    document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
     
-    // पुराने टाइमर और स्क्रीन को रीसेट करना
-    if (timerInterval) clearInterval(timerInterval);
-    currentIdx = 0;
-    userAnswers = {};
-    reviewedQuestions = {};
-    isExamStarted = false;
+    const loadingElem = document.getElementById('loading-spinner');
+    const startBtn = document.getElementById('start-exam-btn');
     
-    // स्क्रीन एलिमेंट्स को शुरुआती स्थिति में लाना
-    if (document.getElementById('start-screen')) document.getElementById('start-screen').style.display = 'block';
-    if (document.getElementById('questions-container')) document.getElementById('questions-container').style.display = 'none';
-    if (document.getElementById('exam-nav-buttons')) document.getElementById('exam-nav-buttons').style.display = 'none';
-    if (document.getElementById('final-result-box')) document.getElementById('final-result-box').style.display = 'none';
-    if (document.getElementById('time-display')) document.getElementById('time-display').innerText = "100:00";
-    if (document.getElementById('total-answered')) document.getElementById('total-answered').innerText = "0";
-    if (document.getElementById('total-reviewed')) document.getElementById('total-reviewed').innerText = "0";
+    loadingElem.style.display = 'block';
+    startBtn.disabled = true;
 
-    // डेटाबेस से 100 प्रश्न काटना
-    let startIndex = (currentTestSet - 1) * 100;
-    let endIndex = startIndex + 100;
-    selectedQuestions = database1000.slice(startIndex, endIndex);
+    // ✅ ऑफ़लाइन फ़ाइलों के लिए सबसे सुरक्षित और अचूक CSV लिंक
+    const sheetUrl = `https://google.com{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(selectedSubject)}`;
 
-    if (selectedQuestions.length === 0) {
-        selectedQuestions = database1000.slice(0, 100);
+    try {
+        const response = await fetch(sheetUrl);
+        if (!response.ok) throw new Error('Network response was not ok');
+        const csvText = await response.text();
+        
+        // CSV डेटा को लाइनों में तोड़ना
+        const lines = csvText.split('\n');
+        questions = [];
+        
+        // पहली लाइन हेडर होती है, इसलिए i=1 से शुरू करेंगे
+        for (let i = 1; i < lines.length; i++) {
+            if (!lines[i].trim()) continue;
+            
+            // ककड़ी/कॉमा के आधार पर डेटा अलग करना (Split CSV)
+            // यह रेगुलर एक्सप्रेशन इनवर्टेड कॉमा (Quotes) के अंदर वाले कॉमा को सुरक्षित रखता है
+            const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*\$)/);
+            
+            if (row.length < 7) continue;
+            
+            let qText = row[1].replace(/"/g, '').trim();
+            let optA = row[2].replace(/"/g, '').trim();
+            let optB = row[3].replace(/"/g, '').trim();
+            let optC = row[4].replace(/"/g, '').trim();
+            let optD = row[5].replace(/"/g, '').trim();
+            let correctLetter = row[6].replace(/"/g, '').trim().toUpperCase();
+            let expText = row[7] ? row[7].replace(/"/g, '').trim() : 'कोई व्याख्या उपलब्ध नहीं है।';
+            
+            let correctIdx = 0;
+            if (correctLetter === 'B') correctIdx = 1;
+            if (correctLetter === 'C') correctIdx = 2;
+            if (correctLetter === 'D') correctIdx = 3;
+            
+            questions.push({
+                id: questions.length,
+                number: questions.length + 1,
+                text: qText,
+                options: [optA, optB, optC, optD],
+                correctIndex: correctIdx,
+                userAnswer: null,
+                isReviewed: false,
+                explanation: expText
+            });
+        }
+        
+        totalQuestionsCount = questions.length;
+        
+        if (totalQuestionsCount === 0) {
+            alert(`"${selectedSubject}" शीट में कोई प्रश्न नहीं मिला। कृपया जांचें।`);
+            loadingElem.style.display = 'none';
+            startBtn.disabled = false;
+            return;
+        }
+        
+        loadingElem.style.display = 'none';
+        document.getElementById('start-screen').style.display = 'none';
+        document.getElementById('exam-nav-buttons').style.display = 'flex';
+        document.getElementById('active-set-title').innerText = `एक्टिव: ${selectedSubject}`;
+        document.getElementById('total-questions').innerText = totalQuestionsCount;
+        
+        buildPalette();
+        loadQuestion(0);
+        startTimer();
+        
+    } catch (error) {
+        console.error(error);
+        alert(`त्रुटि: "${selectedSubject}" लोड नहीं हो सकी। कृपया सुनिश्चित करें कि कंप्यूटर में इंटरनेट चालू है और Google Sheet 'Anyone with the link' पर सेट है।`);
+        loadingElem.style.display = 'none';
+        startBtn.disabled = false;
     }
+}
 
-    const container = document.getElementById('questions-container');
-    const palette = document.getElementById('question-palette');
-    if (container) container.innerHTML = "";
-    if (palette) palette.innerHTML = "";
 
-    selectedQuestions.forEach(function(q, idx) {
-        const card = document.createElement('div');
-        card.className = "question-card " + (idx === 0 ? "active" : "");
-        card.id = "q-card-" + idx;
-        
-        let htmlContent = "<h2>प्रश्न " + (idx + 1) + ": " + q.q + "</h2>";
-        htmlContent += '<div class="options">';
-        
-        q.o.forEach(function(opt, oIdx) {
-            htmlContent += '<label class="option-label">';
-            htmlContent += '<input type="radio" name="q-' + idx + '" value="' + oIdx + '" onchange="selectOption(' + idx + ', ' + oIdx + ')"> ';
-            htmlContent += opt;
-            htmlContent += '</label>';
-        });
-        
-        htmlContent += '</div>';
-        card.innerHTML = htmlContent;
-        if (container) container.appendChild(card);
 
-        // साइडबार पैलेट बटन बनाना (शुरुआत में ये क्लिक नहीं होंगे जब तक परीक्षा स्टार्ट न हो)
-        const btn = document.createElement('div');
-        btn.className = "palette-btn " + (idx === 0 ? "active" : "");
-        btn.id = "palette-btn-" + idx;
-        btn.innerText = idx + 1;
-        btn.onclick = function() { if(isExamStarted) jumpToQuestion(idx); };
-        if (palette) palette.appendChild(btn);
+function buildPalette() {
+    const paletteContainer = document.getElementById('question-palette');
+    paletteContainer.innerHTML = '';
+    
+    questions.forEach((q, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'palette-btn';
+        btn.id = `palette-btn-${idx}`;
+        btn.innerText = q.number;
+        btn.onclick = () => loadQuestion(idx);
+        paletteContainer.appendChild(btn);
     });
 }
 
-// ⚡ नया फंक्शन: जब यूजर 'स्टार्ट परीक्षा' बटन दबाएगा
-function startExamNow() {
-    isExamStarted = true;
+function loadQuestion(idx) {
+    currentQuestionIndex = idx;
+    const q = questions[idx];
+    const container = document.getElementById('questions-container');
     
-    // वेलकम स्क्रीन छुपाना और टेस्ट चालू करना
-    document.getElementById('start-screen').style.display = 'none';
-    document.getElementById('questions-container').style.display = 'block';
-    document.getElementById('exam-nav-buttons').style.display = 'flex';
+    document.querySelectorAll('.palette-btn').forEach(b => b.classList.remove('current'));
+    document.getElementById(`palette-btn-${idx}`).classList.add('current');
     
-    // टाइमर को लाइव टिक-टिक पर लगाना (100 मिनट)
-    startTimer(100 * 60); 
+    let optionsHtml = q.options.map((opt, i) => `
+        <li class="${q.userAnswer === i ? 'selected' : ''}" onclick="selectOption(${i})">
+            <strong>(${String.fromCharCode(65 + i)})</strong> ${opt}
+        </li>
+    `).join('');
+    
+    container.innerHTML = `
+        <div class="question-block active">
+            <h3>प्रश्न ${q.number}:</h3>
+            <p>${q.text}</p>
+            <ul class="options-list">${optionsHtml}</ul>
+        </div>
+    `;
+    updateStats();
 }
 
-// छात्र द्वारा ड्रॉपडाउन बदलने पर नया सेट री-प्रिपेयर करना
-function loadSelectedTest() {
-    prepareSelectedTest();
-}
-
-function changeQuestion(dir) {
-    if(!isExamStarted) return;
-    let newIdx = currentIdx + dir;
-    if (newIdx >= 0 && newIdx < selectedQuestions.length) {
-        jumpToQuestion(newIdx);
-    }
-}
-
-function jumpToQuestion(idx) {
-    if(!isExamStarted) return;
-    if (document.getElementById("q-card-" + currentIdx)) {
-        document.getElementById("q-card-" + currentIdx).classList.remove('active');
-    }
-    if (document.getElementById("palette-btn-" + currentIdx)) {
-        document.getElementById("palette-btn-" + currentIdx).classList.remove('active');
-    }
+function selectOption(optIndex) {
+    const q = questions[currentQuestionIndex];
+    q.userAnswer = optIndex;
     
-    currentIdx = idx;
+    document.querySelectorAll('.options-list li').forEach((li, i) => {
+        if (i === optIndex) li.classList.add('selected');
+        else li.classList.remove('selected');
+    });
     
-    if (document.getElementById("q-card-" + currentIdx)) {
-        document.getElementById("q-card-" + currentIdx).classList.add('active');
-    }
-    if (document.getElementById("palette-btn-" + currentIdx)) {
-        document.getElementById("palette-btn-" + currentIdx).classList.add('active');
-    }
-    
-    if (selectedQuestions[currentIdx] && selectedQuestions[currentIdx].topic) {
-        if (document.getElementById('current-topic-display')) {
-            document.getElementById('current-topic-display').innerText = "विषय: " + selectedQuestions[currentIdx].topic;
-        }
-    }
-}
-
-function selectOption(questionIdx, selectedValue) {
-    if(!isExamStarted) return;
-    userAnswers[questionIdx] = selectedValue;
-    
-    if (reviewedQuestions[questionIdx]) {
-        delete reviewedQuestions[questionIdx];
-        if (document.getElementById("palette-btn-" + questionIdx)) {
-            document.getElementById("palette-btn-" + questionIdx).classList.remove('reviewed');
-        }
-    }
-    
-    const btn = document.getElementById("palette-btn-" + questionIdx);
-    if (btn) {
-        btn.classList.add('answered');
-    }
-    
-    if (document.getElementById('total-answered')) {
-        document.getElementById('total-answered').innerText = Object.keys(userAnswers).length;
-    }
-    if (document.getElementById('total-reviewed')) {
-        document.getElementById('total-reviewed').innerText = Object.keys(reviewedQuestions).length;
-    }
+    document.getElementById(`palette-btn-${currentQuestionIndex}`).classList.add('answered');
+    updateStats();
 }
 
 function markForReview() {
-    if(!isExamStarted) return;
-    reviewedQuestions[currentIdx] = true;
+    const q = questions[currentQuestionIndex];
+    q.isReviewed = !q.isReviewed;
     
-    const btn = document.getElementById("palette-btn-" + currentIdx);
-    if (btn) {
-        btn.classList.remove('answered');
-        btn.classList.add('reviewed');
-    }
-    
-    if (document.getElementById('total-reviewed')) {
-        document.getElementById('total-reviewed').innerText = Object.keys(reviewedQuestions).length;
-    }
-    changeQuestion(1);
+    const paletteBtn = document.getElementById(`palette-btn-${currentQuestionIndex}`);
+    if (q.isReviewed) paletteBtn.classList.add('reviewed');
+    else paletteBtn.classList.remove('reviewed');
+    updateStats();
 }
 
-function startTimer(duration) {
-    let timer = duration, minutes, seconds;
-    const display = document.getElementById('time-display');
+function changeQuestion(dir) {
+    let nextIdx = currentQuestionIndex + dir;
+    if (nextIdx >= 0 && nextIdx < totalQuestionsCount) {
+        loadQuestion(nextIdx);
+    }
+}
+
+function updateStats() {
+    let answered = questions.filter(q => q.userAnswer !== null).length;
+    let reviewed = questions.filter(q => q.isReviewed).length;
     
-    timerInterval = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
+    document.getElementById('total-answered').innerText = answered;
+    document.getElementById('total-reviewed').innerText = reviewed;
+}
 
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        if (display) display.textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
+function startTimer() {
+    timerInterval = setInterval(() => {
+        timeLeft--;
+        let min = Math.floor(timeLeft / 60);
+        let sec = timeLeft % 60;
+        document.getElementById('time-display').innerText = 
+            `${min.toString().padStart(2, '0')}:${sec.toString().padStart(2, '0')}`;
+        
+        if (timeLeft <= 0) {
             clearInterval(timerInterval);
             submitExam();
         }
@@ -325,71 +192,29 @@ function startTimer(duration) {
 }
 
 function submitExam() {
-    if(!isExamStarted) return;
     clearInterval(timerInterval);
     let correct = 0;
     let wrong = 0;
-    let totalQuestionsCount = selectedQuestions.length;
-
-    selectedQuestions.forEach(function(q, idx) {
-        if (userAnswers[idx] !== undefined) {
-            if (userAnswers[idx] == q.a) {
-                correct++;
-            } else {
-                wrong++;
-            }
-        } else {
-            wrong++;
+    
+    questions.forEach(q => {
+        if (q.userAnswer !== null) {
+            if (q.userAnswer === q.correctIndex) correct++;
+            else wrong++;
         }
     });
-
-    let scorePercent = ((correct / totalQuestionsCount) * 100).toFixed(1);
-
-    if (document.getElementById('correct-count')) document.getElementById('correct-count').innerText = correct;
-    if (document.getElementById('wrong-count')) document.getElementById('wrong-count').innerText = wrong;
-    if (document.getElementById('percentage-score')) document.getElementById('percentage-score').innerText = scorePercent + "%";
     
-    if (document.getElementById('final-result-box')) {
-        document.getElementById('final-result-box').style.display = 'block';
-    }
-
-    isExamStarted = false; // परीक्षा लॉक करना
-    alert("परीक्षा सफलतापूर्वक सबमिट हो गई है!\nआपका रिजल्ट साइड पैनल के 'फाइनल स्कोर कार्ड' में अपडेट कर दिया गया है।");
+    let percent = ((correct / totalQuestionsCount) * 100).toFixed(1);
+    
+    document.getElementById('correct-count').innerText = correct;
+    document.getElementById('wrong-count').innerText = wrong;
+    document.getElementById('percentage-score').innerText = `${percent}%`;
+    document.getElementById('final-result-box').style.display = 'block';
+    
+    alert(`परीक्षा समाप्त! कुल सही उत्तर: ${correct} / ${totalQuestionsCount}`);
 }
 
-window.onload = setupTestDropdown;
-// ⚡ नया फंक्शन: लॉगआउट करके वेलकम स्क्रीन पर वापस जाने के लिए
 function logoutToWelcome() {
-    // यदि परीक्षा चल रही है, तो छात्र से पुष्टि (Confirmation) मांगना
-    if (isExamStarted) {
-        let confirmExit = confirm("क्या आप सचमुच परीक्षा से बाहर जाना चाहते हैं? बाहर जाने पर आपका वर्तमान प्रोग्रेस डेटा सेव नहीं होगा।");
-        if (!confirmExit) {
-            return; // यदि छात्र Cancel दबाता है, तो परीक्षा चलती रहेगी
-        }
+    if (confirm("क्या आप वाकई टेस्ट छोड़कर वापस जाना चाहते हैं?")) {
+        location.reload();
     }
-
-    // टाइमर को रोकना
-    if (timerInterval) clearInterval(timerInterval);
-    
-    // परीक्षा स्टेट को बंद करना
-    isExamStarted = false;
-    currentIdx = 0;
-    userAnswers = {};
-    reviewedQuestions = {};
-
-    // इंटरफ़ेस को रीसेट करके वापस वेलकम स्क्रीन पर ले जाना
-    if (document.getElementById('start-screen')) document.getElementById('start-screen').style.display = 'block';
-    if (document.getElementById('questions-container')) document.getElementById('questions-container').style.display = 'none';
-    if (document.getElementById('exam-nav-buttons')) document.getElementById('exam-nav-buttons').style.display = 'none';
-    if (document.getElementById('final-result-box')) document.getElementById('final-result-box').style.display = 'none';
-    
-    // प्रोग्रेस काउंटर्स और टाइमर टेक्स्ट को वापस शुरुआती स्थिति में लाना
-    if (document.getElementById('time-display')) document.getElementById('time-display').innerText = "100:00";
-    if (document.getElementById('total-answered')) document.getElementById('total-answered').innerText = "0";
-    if (document.getElementById('total-reviewed')) document.getElementById('total-reviewed').innerText = "0";
-
-    // रेडियो बटनों को अनचेक (Uncheck) करने और पैलेट कलर्स को साफ़ करने के लिए टेस्ट दोबारा बैकएंड में लोड करना
-    prepareSelectedTest();
-    
-    alert("आप सफलतापूर्वक लॉगआउट हो चुके हैं। आप नया सेट चुनकर दोबारा परीक्षा शुरू कर सकते हैं।");
 }
