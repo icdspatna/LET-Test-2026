@@ -18,38 +18,38 @@
 </header>
 
 <div class="main-container">
-    <!-- बायाँ भाग: प्रश्न क्षेत्र -->
+    <!-- बायाँ भाग: प्रश्न और समीक्षा क्षेत्र -->
     <div class="quiz-area">
         <div class="test-header-bar">
             <span id="current-topic-display">विषय: पुस्तकालय विज्ञान (नियम व सिद्धांत)</span>
         </div>
 
         <!-- विषय और सेट सेलेक्टर स्क्रीन -->
-<div id="start-screen">
-    <h2>BLIS / MLIS एवं सामान्य अध्ययन ऑनलाइन परीक्षा पोर्टल</h2>
-    <p class="welcome-desc">कृपया पहले विषय चुनें, फिर टेस्ट शुरू करें:</p>
-    
-    <!-- विषय चुनने का ड्रॉपडाउन / ग्रिड -->
-    <div style="margin: 20px 0; text-align: center;">
-        <label for="subject-select" style="font-weight: bold; font-size: 16px;">विषय (Subject) चुनें: </label>
-        <select id="subject-select" style="padding: 10px 15px; font-size: 16px; border-radius: 6px; border: 2px solid #2563eb;" onchange="updateSelectedSubject()">
-            <option value="BLIS">📚 BLIS (Library Science)</option>
-            <option value="MLIS">📖 MLIS (Master Library Science)</option>
-            <option value="Hindi">✍️ सामान्य हिंदी (Hindi)</option>
-            <option value="GS">🌐 सामान्य अध्ययन (GS)</option>
-            <option value="GK">💡 सामान्य ज्ञान (GK)</option>
-        </select>
-    </div>
+        <div id="start-screen">
+            <h2>BLIS / MLIS एवं सामान्य अध्ययन ऑनलाइन परीक्षा पोर्टल</h2>
+            <p class="welcome-desc">कृपया पहले विषय चुनें, फिर टेस्ट शुरू करें:</p>
+            
+            <!-- विषय चुनने का ड्रॉपडाउन -->
+            <div style="margin: 20px 0; text-align: center;">
+                <label for="subject-select" style="font-weight: bold; font-size: 16px;">विषय (Subject) चुनें: </label>
+                <select id="subject-select" style="padding: 10px 15px; font-size: 16px; border-radius: 6px; border: 2px solid #2563eb;" onchange="updateSelectedSubject()">
+                    <option value="BLIS">📚 BLIS (Library Science)</option>
+                    <option value="MLIS">📖 MLIS (Master Library Science)</option>
+                    <option value="Hindi">✍️ सामान्य हिंदी (Hindi)</option>
+                    <option value="GS">🌐 सामान्य अध्ययन (GS)</option>
+                    <option value="GK">💡 सामान्य ज्ञान (GK)</option>
+                </select>
+            </div>
 
-    <!-- लोडिंग इंडिकेटर -->
-    <div id="loading-spinner" style="display: none; color: #2563eb; font-weight: bold; margin: 15px 0;">
-        ⏳ गूगल शीट से प्रश्न लोड हो रहे हैं, कृपया प्रतीक्षा करें...
-    </div>
+            <!-- लोडिंग इंडिकेटर -->
+            <div id="loading-spinner" style="display: none; text-align: center; color: #2563eb; font-weight: bold; margin: 15px 0;">
+                ⏳ गूगल शीट से प्रश्न लोड हो रहे हैं, कृपया प्रतीक्षा करें...
+            </div>
 
-    <div class="start-btn-container">
-        <button id="start-exam-btn" onclick="startExamWithSubject()">🚀 परीक्षा शुरू करें (Start Test)</button>
-    </div>
-</div>
+            <div class="start-btn-container" style="text-align: center;">
+                <button id="start-exam-btn" onclick="startExamWithSubject()">🚀 परीक्षा शुरू करें (Start Test)</button>
+            </div>
+        </div>
 
         <!-- प्रश्न कंटेनर (यह पहले से छुपा रहेगा और स्टार्ट क्लिक पर दिखेगा) -->
         <div id="questions-container">
@@ -57,10 +57,18 @@
         </div>
         
         <!-- नेविगेशन बटन्स -->
-        <div class="nav-buttons" id="exam-nav-buttons">
+        <div class="nav-buttons" id="exam-nav-buttons" style="display: none;">
             <button class="nav-btn prev-btn" onclick="changeQuestion(-1)">← Previous</button>
             <button class="nav-btn review-btn" onclick="markForReview()">⭐ Mark for Review</button>
             <button class="nav-btn next-btn" onclick="changeQuestion(1)">Save & Next →</button>
+        </div>
+
+        <!-- 🎯 परीक्षा सबमिट होने के बाद समीक्षा (Review) दिखाने का क्षेत्र (जोड़ा गया) -->
+        <div id="review-section" style="display: none; margin-top: 30px; padding: 20px; background: #ffffff; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); border-top: 4px solid #2563eb;">
+            <h2 style="color: #1e3a8a; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; margin-top: 0;">📝 प्रश्न समीक्षा एवं व्याख्या (Answer Key & Explanations)</h2>
+            <div id="review-questions-list">
+                <!-- यहाँ JavaScript द्वारा सभी प्रश्न, उनके सही उत्तर और व्याख्या लोड होंगे -->
+            </div>
         </div>
     </div>
 
@@ -73,17 +81,17 @@
         <div class="score-board">
             <h4>📊 परीक्षा प्रोग्रेस रिपोर्ट</h4>
             <div class="stats-grid">
-                <div>कुल प्रश्न: <span id="total-questions">100</span></div>
+                <div>कुल प्रश्न: <span id="total-questions">0</span></div>
                 <div>उत्तर दिए (पीला): <span id="total-answered">0</span></div>
                 <div>रिव्यू मार्क (बैंगनी): <span id="total-reviewed">0</span></div>
             </div>
             
             <!-- फाइनल रिजल्ट बॉक्स -->
-            <div id="final-result-box">
+            <div id="final-result-box" style="display: none;">
                 <h4>🎯 फाइनल स्कोर कार्ड</h4>
-                <p class="res-correct">सही उत्तर: <span id="correct-count">0</span></p>
-                <p class="res-wrong">गलत उत्तर: <span id="wrong-count">0</span></p>
-                <p class="res-percent">कुल प्रतिशत: <span id="percentage-score">0%</span></p>
+                <p class="res-correct" style="color: #166534; font-weight: bold;">सही उत्तर: <span id="correct-count">0</span></p>
+                <p class="res-wrong" style="color: #991b1b; font-weight: bold;">गलत उत्तर: <span id="wrong-count">0</span></p>
+                <p class="res-percent" style="font-size: 18px; font-weight: bold; color: #1e3a8a;">कुल प्रतिशत: <span id="percentage-score">0%</span></p>
             </div>
         </div>
 
