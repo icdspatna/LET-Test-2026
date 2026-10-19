@@ -14,7 +14,8 @@ function updateSelectedSubject() {
     document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
 }
 
-async function startExamWithSubject() {
+// 🎯 मुख्य सुधार: ब्राउज़र सुरक्षा नीति (CORS) से बचने के लिए JSONP का उपयोग
+function startExamWithSubject() {
     selectedSubject = document.getElementById('subject-select').value;
     document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
     
@@ -24,44 +25,54 @@ async function startExamWithSubject() {
     loadingElem.style.display = 'block';
     startBtn.disabled = true;
 
-    // ✅ ऑफ़लाइन फ़ाइलों के लिए सबसे सुरक्षित और अचूक CSV लिंक
-    const sheetUrl = `https://google.com{SHEET_ID}/gviz/tq?tqx=out:csv&sheet=${encodeURIComponent(selectedSubject)}`;
+    // पुराना Fetch तरीका हटाकर स्क्रिप्ट टैग के जरिए डेटा लोड करना
+    const oldScript = document.getElementById('sheet-jsonp-script');
+    if (oldScript) oldScript.remove();
+
+    const script = document.createElement('script');
+    script.id = 'sheet-jsonp-script';
+    
+    // गूगल का विशिष्ट JSONP एंडपॉइंट जो 'handleSheetData' फंक्शन को कॉल करेगा
+    script.src = `https://google.com{SHEET_ID}/gviz/tq?tqx=responseHandler:handleSheetData&sheet=${encodeURIComponent(selectedSubject)}`;
+    
+    // लोड एरर हैंडलिंग
+    script.onerror = function() {
+        alert(`त्रुटि: "${selectedSubject}" लोड नहीं हो सकी। कृपया Sheet ID, इंटरनेट या शीट शेयर सेटिंग्स जांचें।`);
+        loadingElem.style.display = 'none';
+        startBtn.disabled = false;
+    };
+
+    document.body.appendChild(script);
+}
+
+// 🎯 यह फंक्शन गूगल शीट से डेटा आते ही अपने आप रन होगा (बिना सुरक्षा एरर के)
+function handleSheetData(jsonData) {
+    const loadingElem = document.getElementById('loading-spinner');
+    const startBtn = document.getElementById('start-exam-btn');
 
     try {
-        const response = await fetch(sheetUrl);
-        if (!response.ok) throw new Error('Network response was not ok');
-        const csvText = await response.text();
-        
-        // CSV डेटा को लाइनों में तोड़ना
-        const lines = csvText.split('\n');
+        const rows = jsonData.table.rows;
         questions = [];
-        
-        // पहली लाइन हेडर होती है, इसलिए i=1 से शुरू करेंगे
-        for (let i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
-            
-            // ककड़ी/कॉमा के आधार पर डेटा अलग करना (Split CSV)
-            // यह रेगुलर एक्सप्रेशन इनवर्टेड कॉमा (Quotes) के अंदर वाले कॉमा को सुरक्षित रखता है
-            const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*\$)/);
-            
-            if (row.length < 7) continue;
-            
-            let qText = row[1].replace(/"/g, '').trim();
-            let optA = row[2].replace(/"/g, '').trim();
-            let optB = row[3].replace(/"/g, '').trim();
-            let optC = row[4].replace(/"/g, '').trim();
-            let optD = row[5].replace(/"/g, '').trim();
-            let correctLetter = row[6].replace(/"/g, '').trim().toUpperCase();
-            let expText = row[7] ? row[7].replace(/"/g, '').trim() : 'कोई व्याख्या उपलब्ध नहीं है।';
-            
+
+        rows.forEach((row, idx) => {
+            if (!row.c || row.c[0] === null) return; // खाली पंक्तियाँ छोड़ें
+
+            let qText = row.c[1] ? row.c[1].v : '';
+            let optA = row.c[2] ? row.c[2].v : '';
+            let optB = row.c[3] ? row.c[3].v : '';
+            let optC = row.c[4] ? row.c[4].v : '';
+            let optD = row.c[5] ? row.c[5].v : '';
+            let correctLetter = row.c[6] ? row.c[6].v.toString().trim().toUpperCase() : 'A';
+            let expText = row.c[7] ? row.c[7].v : 'इस प्रश्न के लिए कोई व्याख्या उपलब्ध नहीं है।';
+
             let correctIdx = 0;
             if (correctLetter === 'B') correctIdx = 1;
             if (correctLetter === 'C') correctIdx = 2;
             if (correctLetter === 'D') correctIdx = 3;
-            
+
             questions.push({
-                id: questions.length,
-                number: questions.length + 1,
+                id: idx,
+                number: idx + 1,
                 text: qText,
                 options: [optA, optB, optC, optD],
                 correctIndex: correctIdx,
@@ -69,41 +80,39 @@ async function startExamWithSubject() {
                 isReviewed: false,
                 explanation: expText
             });
-        }
-        
+        });
+
         totalQuestionsCount = questions.length;
-        
+
         if (totalQuestionsCount === 0) {
-            alert(`"${selectedSubject}" शीट में कोई प्रश्न नहीं मिला। कृपया जांचें।`);
+            alert(`"${selectedSubject}" शीट में कोई प्रश्न नहीं मिला। कृपया अपनी गूगल शीट के कॉलम जांचें।`);
             loadingElem.style.display = 'none';
             startBtn.disabled = false;
             return;
         }
-        
+
+        // परीक्षा स्क्रीन चालू करें
         loadingElem.style.display = 'none';
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('exam-nav-buttons').style.display = 'flex';
-        document.getElementById('active-set-title').innerText = `एक्टिव: ${selectedSubject}`;
+        document.getElementById('active-set-title').innerText = `एक्टिव विषय: ${selectedSubject}`;
         document.getElementById('total-questions').innerText = totalQuestionsCount;
-        
+
         buildPalette();
         loadQuestion(0);
         startTimer();
-        
+
     } catch (error) {
-        console.error(error);
-        alert(`त्रुटि: "${selectedSubject}" लोड नहीं हो सकी। कृपया सुनिश्चित करें कि कंप्यूटर में इंटरनेट चालू है और Google Sheet 'Anyone with the link' पर सेट है।`);
+        console.error("डेटा प्रोसेसिंग एरर:", error);
+        alert("डेटा फॉर्मेट सही नहीं है। कृपया सुनिश्चित करें कि गूगल शीट के कॉलम सही क्रम में हैं।");
         loadingElem.style.display = 'none';
         startBtn.disabled = false;
     }
 }
 
-
-
 function buildPalette() {
     const paletteContainer = document.getElementById('question-palette');
     paletteContainer.innerHTML = '';
-    
     questions.forEach((q, idx) => {
         const btn = document.createElement('button');
         btn.className = 'palette-btn';
@@ -154,7 +163,6 @@ function selectOption(optIndex) {
 function markForReview() {
     const q = questions[currentQuestionIndex];
     q.isReviewed = !q.isReviewed;
-    
     const paletteBtn = document.getElementById(`palette-btn-${currentQuestionIndex}`);
     if (q.isReviewed) paletteBtn.classList.add('reviewed');
     else paletteBtn.classList.remove('reviewed');
@@ -171,7 +179,6 @@ function changeQuestion(dir) {
 function updateStats() {
     let answered = questions.filter(q => q.userAnswer !== null).length;
     let reviewed = questions.filter(q => q.isReviewed).length;
-    
     document.getElementById('total-answered').innerText = answered;
     document.getElementById('total-reviewed').innerText = reviewed;
 }
@@ -210,7 +217,43 @@ function submitExam() {
     document.getElementById('percentage-score').innerText = `${percent}%`;
     document.getElementById('final-result-box').style.display = 'block';
     
-    alert(`परीक्षा समाप्त! कुल सही उत्तर: ${correct} / ${totalQuestionsCount}`);
+    generateReviewPanel();
+    
+    alert(`परीक्षा समाप्त! आपका स्कोर: ${percent}%। नीचे स्क्रॉल करके विस्तृत व्याख्या देखें।`);
+}
+
+function generateReviewPanel() {
+    const reviewListContainer = document.getElementById('review-questions-list');
+    reviewListContainer.innerHTML = '';
+    
+    questions.forEach((q) => {
+        const isCorrect = q.userAnswer === q.correctIndex;
+        const cardClass = q.userAnswer === null ? 'review-card' : (isCorrect ? 'review-card correct-card' : 'review-card wrong-card');
+        
+        let statusText = q.userAnswer === null ? "⚪ आपने इस प्रश्न का उत्तर नहीं दिया।" : (isCorrect ? "🟢 आपका उत्तर सही है।" : "🔴 आपका उत्तर गलत है।");
+
+        let optionsHtml = q.options.map((opt, i) => {
+            let cssClass = "review-opt";
+            if (i === q.correctIndex) cssClass += " correct";
+            if (q.userAnswer === i && !isCorrect) cssClass += " wrong";
+            return `<div class="${cssClass}">(${String.fromCharCode(65 + i)}) ${opt}</div>`;
+        }).join('');
+
+        const card = document.createElement('div');
+        card.className = cardClass;
+        card.innerHTML = `
+            <h4>प्रश्न ${q.number}: ${q.text}</h4>
+            <div class="user-ans-info">${statusText}</div>
+            <div style="margin-left: 15px;">${optionsHtml}</div>
+            <div class="explanation-box">
+                <strong>💡 व्याख्या (Explanation):</strong> ${q.explanation}
+            </div>
+        `;
+        reviewListContainer.appendChild(card);
+    });
+    
+    document.getElementById('review-section').style.display = 'block';
+    document.getElementById('review-section').scrollIntoView({ behavior: 'smooth' });
 }
 
 function logoutToWelcome() {
