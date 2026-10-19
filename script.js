@@ -1,5 +1,5 @@
-// 🔴 अपनी गूगल शीट की ID यहाँ डालें
-const SHEET_ID = 'https://docs.google.com/spreadsheets/d/1v06TReMUN_KHEbi9yaZnC1WE1Cks1-O6ORdRtLcfs68/edit?usp=sharing'; 
+// ✅ आपकी गूगल शीट की सही ID यहाँ सेट कर दी गई है
+const SHEET_ID = '1v06TReMUN_KHEbi9yaZnC1WE1Cks1-O6ORdRtLcfs68'; 
 
 let selectedSubject = 'BLIS';
 let currentQuestionIndex = 0;
@@ -14,7 +14,6 @@ function updateSelectedSubject() {
     document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
 }
 
-// 🎯 मुख्य सुधार: ब्राउज़र सुरक्षा नीति (CORS) से बचने के लिए JSONP का उपयोग
 function startExamWithSubject() {
     selectedSubject = document.getElementById('subject-select').value;
     document.getElementById('current-topic-display').innerText = `विषय: ${selectedSubject}`;
@@ -25,19 +24,17 @@ function startExamWithSubject() {
     loadingElem.style.display = 'block';
     startBtn.disabled = true;
 
-    // पुराना Fetch तरीका हटाकर स्क्रिप्ट टैग के जरिए डेटा लोड करना
     const oldScript = document.getElementById('sheet-jsonp-script');
     if (oldScript) oldScript.remove();
 
     const script = document.createElement('script');
     script.id = 'sheet-jsonp-script';
     
-    // गूगल का विशिष्ट JSONP एंडपॉइंट जो 'handleSheetData' फंक्शन को कॉल करेगा
+    // JSONP सुरक्षा बायपास लिंक
     script.src = `https://google.com{SHEET_ID}/gviz/tq?tqx=responseHandler:handleSheetData&sheet=${encodeURIComponent(selectedSubject)}`;
     
-    // लोड एरर हैंडलिंग
     script.onerror = function() {
-        alert(`त्रुटि: "${selectedSubject}" लोड नहीं हो सकी। कृपया Sheet ID, इंटरनेट या शीट शेयर सेटिंग्स जांचें।`);
+        alert(`त्रुटि: "${selectedSubject}" लोड नहीं हो सकी। कृपया इंटरनेट जांचें और सुनिश्चित करें कि Google Sheet में Share सेटिंग्स 'Anyone with the link' पर सेट है।`);
         loadingElem.style.display = 'none';
         startBtn.disabled = false;
     };
@@ -45,7 +42,7 @@ function startExamWithSubject() {
     document.body.appendChild(script);
 }
 
-// 🎯 यह फंक्शन गूगल शीट से डेटा आते ही अपने आप रन होगा (बिना सुरक्षा एरर के)
+// गूगल शीट से डेटा आने पर उसे प्रोसेस करने वाला सही फंक्शन
 function handleSheetData(jsonData) {
     const loadingElem = document.getElementById('loading-spinner');
     const startBtn = document.getElementById('start-exam-btn');
@@ -55,15 +52,20 @@ function handleSheetData(jsonData) {
         questions = [];
 
         rows.forEach((row, idx) => {
-            if (!row.c || row.c[0] === null) return; // खाली पंक्तियाँ छोड़ें
+            // पहली लाइन हेडर (SetNum, QuestionText...) होती है, इसे छोड़ दें
+            if (idx === 0) return; 
+            if (!row || !row.c || row.c[1] == null) return; 
 
+            // आपकी शीट के अनुसार कॉलम मैपिंग (A=0, B=1, C=2, D=3, E=4, F=5, G=6, H=7)
             let qText = row.c[1] ? row.c[1].v : '';
             let optA = row.c[2] ? row.c[2].v : '';
             let optB = row.c[3] ? row.c[3].v : '';
             let optC = row.c[4] ? row.c[4].v : '';
             let optD = row.c[5] ? row.c[5].v : '';
             let correctLetter = row.c[6] ? row.c[6].v.toString().trim().toUpperCase() : 'A';
-            let expText = row.c[7] ? row.c[7].v : 'इस प्रश्न के लिए कोई व्याख्या उपलब्ध नहीं है।';
+            
+            // यदि आपने H कॉलम में व्याख्या लिखी है तो आएगी, अन्यथा डिफ़ॉल्ट संदेश दिखेगा
+            let expText = row.c[7] ? row.c[7].v : 'इस प्रश्न के लिए कोई आधिकारिक व्याख्या उपलब्ध नहीं है।';
 
             let correctIdx = 0;
             if (correctLetter === 'B') correctIdx = 1;
@@ -71,8 +73,8 @@ function handleSheetData(jsonData) {
             if (correctLetter === 'D') correctIdx = 3;
 
             questions.push({
-                id: idx,
-                number: idx + 1,
+                id: questions.length,
+                number: questions.length + 1,
                 text: qText,
                 options: [optA, optB, optC, optD],
                 correctIndex: correctIdx,
@@ -85,13 +87,13 @@ function handleSheetData(jsonData) {
         totalQuestionsCount = questions.length;
 
         if (totalQuestionsCount === 0) {
-            alert(`"${selectedSubject}" शीट में कोई प्रश्न नहीं मिला। कृपया अपनी गूगल शीट के कॉलम जांचें।`);
+            alert(`टैब "${selectedSubject}" में कोई प्रश्न नहीं मिला। कृपया जांचें कि डेटा सही रो से शुरू है या नहीं।`);
             loadingElem.style.display = 'none';
             startBtn.disabled = false;
             return;
         }
 
-        // परीक्षा स्क्रीन चालू करें
+        examStarted = true;
         loadingElem.style.display = 'none';
         document.getElementById('start-screen').style.display = 'none';
         document.getElementById('exam-nav-buttons').style.display = 'flex';
@@ -103,8 +105,8 @@ function handleSheetData(jsonData) {
         startTimer();
 
     } catch (error) {
-        console.error("डेटा प्रोसेसिंग एरर:", error);
-        alert("डेटा फॉर्मेट सही नहीं है। कृपया सुनिश्चित करें कि गूगल शीट के कॉलम सही क्रम में हैं।");
+        console.error("प्रसंस्करण त्रुटि:", error);
+        alert("डेटा फॉर्मेट पढ़ने में समस्या हुई। कृपया गूगल शीट की संरचना जांचें।");
         loadingElem.style.display = 'none';
         startBtn.disabled = false;
     }
@@ -199,6 +201,7 @@ function startTimer() {
 }
 
 function submitExam() {
+    if (!examStarted) return;
     clearInterval(timerInterval);
     let correct = 0;
     let wrong = 0;
@@ -219,7 +222,7 @@ function submitExam() {
     
     generateReviewPanel();
     
-    alert(`परीक्षा समाप्त! आपका स्कोर: ${percent}%। नीचे स्क्रॉल करके विस्तृत व्याख्या देखें।`);
+    alert(`परीक्षा समाप्त! आपका स्कोर: ${percent}%। विस्तृत उत्तर कुंजी नीचे देखें।`);
 }
 
 function generateReviewPanel() {
